@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Soot Image Analysis</title>
+</head>
+<body>
+    <h1>Soot Image Analysis</h1>
+    
+    <!-- Display flash messages if any -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for msg in messages %}
+            <li style="color: red;">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Upload form -->
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <label for="file">Select image:</label>
+        <input type="file" name="file" id="file" required>
+        <br><br>
+        
+        <label>Measurement Dimension:</label>
+        <input type="radio" name="dimension" value="h" checked> Height (h)
+        <input type="radio" name="dimension" value="w"> Width (w)
+        <br><br>
+        
+        <label for="size">Physical Size (cm):</label>
+        <input type="number" name="size" id="size" step="0.1" value="10.0" required>
+        <br><br>
+        
+        <label for="step">Step Value:</label>
+        <input type="number" name="step" id="step" value="10" required>
+        <br><br>
+        
+        <input type="submit" value="Upload and Process Image">
+    </form>
+    
+    <!-- Display output images if available -->
+    {% if processed_image_url %}
+        <h2>Processed Annotated Image:</h2>
+        <img src="{{ processed_image_url }}" alt="Annotated Image">
+    {% endif %}
+    
+    {% if contours_url %}
+        <h2>Contours Image:</h2>
+        <img src="{{ contours_url }}" alt="Contours Image">
+    {% endif %}
+    
+    {% if measurements_image_url %}
+        <h2>Measurements Image:</h2>
+        <img src="{{ measurements_image_url }}" alt="Measurements Image">
+    {% endif %}
+    
+    {% if plot_url %}
+        <h2>Output Plot:</h2>
+        <img src="{{ plot_url }}" alt="Output Plot">
+    {% endif %}
+    
+    <!-- Optionally, display measurement results -->
+    {% if measurements %}
+        <h3>Measurement Results:</h3>
+        <pre>{{ measurements | pprint }}</pre>
+    {% endif %}
+</body>
+</html>
