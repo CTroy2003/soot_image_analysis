@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Soot Image Analysis</title>
+    <style>
+        /* Limit the images' width, center them, and add spacing */
+        img {
+            max-width: 600px;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Soot Image Analysis</h1>
@@ -41,10 +49,12 @@
     </form>
     
     <!-- Display output images if available -->
+     <!--
     {% if processed_image_url %}
         <h2>Processed Annotated Image:</h2>
         <img src="{{ processed_image_url }}" alt="Annotated Image">
     {% endif %}
+    -->
     
     {% if contours_url %}
         <h2>Contours Image:</h2>
