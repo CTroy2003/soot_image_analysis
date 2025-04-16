@@ -4,77 +4,122 @@
     <meta charset="UTF-8">
     <title>Soot Image Analysis</title>
     <style>
-        /* Limit the images' width, center them, and add spacing */
-        img {
-            max-width: 600px;
-            display: block;
-            margin: 20px auto;
+        body {
+            font-family: sans-serif;
         }
+        .center-container {
+            width: 60%; /* Adjust width as needed */
+            margin: 20px auto; /* Centers the container */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-align: center; /* Centers inline content like text and images */
+        }
+        .center-container form label,
+        .center-container form input {
+            display: block; /* Stack form elements vertically */
+            margin-bottom: 10px;
+            margin-left: auto; /* Helps center block elements if width is set */
+            margin-right: auto;
+        }
+        .center-container form input[type="radio"],
+        .center-container form input[type="radio"] + label {
+            display: inline-block; /* Keep radio buttons and labels inline */
+            margin-right: 10px;
+        }
+        .center-container form input[type="submit"] {
+             margin-top: 15px;
+        }
+        .results-container {
+             margin-top: 30px;
+             text-align: center; /* Center heading and pre block */
+        }
+        .results-container pre {
+            display: inline-block; /* Allows margin auto centering */
+            text-align: left; /* Keep preformatted text left-aligned */
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+         img {
+            max-width: 100%; /* Ensure image is responsive */
+            height: auto;
+            margin-top: 15px;
+            display: block; /* Allows centering with margin */
+            margin-left: auto;
+            margin-right: auto;
+         }
     </style>
 </head>
 <body>
-    <h1>Soot Image Analysis</h1>
-    
-    <!-- Display flash messages if any -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-          {% for msg in messages %}
-            <li style="color: red;">{{ msg }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    
-    <!-- Upload form -->
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-        <label for="file">Select image:</label>
-        <input type="file" name="file" id="file" required>
-        <br><br>
+    <div class="center-container">
+        <h1>Soot Image Analysis</h1>
         
-        <label>Measurement Dimension:</label>
-        <input type="radio" name="dimension" value="h" checked> Height (h)
-        <input type="radio" name="dimension" value="w"> Width (w)
-        <br><br>
+        <!-- Display flash messages if any -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul>
+              {% for msg in messages %}
+                <li style="color: red;">{{ msg }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
         
-        <label for="size">Physical Size (cm):</label>
-        <input type="number" name="size" id="size" step="0.1" value="10.0" required>
-        <br><br>
+        <!-- Upload form -->
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+            <label for="file">Select image:</label>
+            <input type="file" name="file" id="file" required>
+            <br><br>
+            
+            <label>Measurement Dimension:</label>
+            <input type="radio" name="dimension" value="h" checked> Height (h)
+            <input type="radio" name="dimension" value="w"> Width (w)
+            <br><br>
+            
+            <label for="size">Physical Size (cm):</label>
+            <input type="number" name="size" id="size" step="0.1" value="10.0" required>
+            <br><br>
+            
+            <label for="step">Step Value:</label>
+            <input type="number" name="step" id="step" value="10" required>
+            <br><br>
+            
+            <input type="submit" value="Upload and Process Image">
+        </form>
         
-        <label for="step">Step Value:</label>
-        <input type="number" name="step" id="step" value="10" required>
-        <br><br>
+        <!-- Display output images if available -->
+         <!--
+        {% if processed_image_url %}
+            <h2>Processed Annotated Image:</h2>
+            <img src="{{ processed_image_url }}" alt="Annotated Image">
+        {% endif %}
+        -->
         
-        <input type="submit" value="Upload and Process Image">
-    </form>
-    
-    <!-- Display output images if available -->
-     <!--
-    {% if processed_image_url %}
-        <h2>Processed Annotated Image:</h2>
-        <img src="{{ processed_image_url }}" alt="Annotated Image">
-    {% endif %}
-    -->
-    
-    {% if contours_url %}
-        <h2>Contours Image:</h2>
-        <img src="{{ contours_url }}" alt="Contours Image">
-    {% endif %}
-    
-    {% if measurements_image_url %}
-        <h2>Measurements Image:</h2>
-        <img src="{{ measurements_image_url }}" alt="Measurements Image">
-    {% endif %}
-    
-    {% if plot_url %}
-        <h2>Output Plot:</h2>
-        <img src="{{ plot_url }}" alt="Output Plot">
-    {% endif %}
-    
-    <!-- Optionally, display measurement results -->
-    {% if measurements %}
-        <h3>Measurement Results:</h3>
-        <pre>{{ measurements | pprint }}</pre>
-    {% endif %}
+        {% if contours_url %}
+            <h2>Contours Image:</h2>
+            <img src="{{ contours_url }}" alt="Contours Image">
+        {% endif %}
+        
+        {% if measurements_image_url %}
+            <h2>Measurements Image:</h2>
+            <img src="{{ measurements_image_url }}" alt="Measurements Image">
+        {% endif %}
+        
+        {% if plot_url %}
+            <h2>Output Plot:</h2>
+            <img src="{{ plot_url }}" alt="Output Plot">
+        {% endif %}
+        
+        <!-- Optionally, display measurement results -->
+        {% if measurements %}
+            <div class="results-container">
+                <h3>Measurement Results:</h3>
+                <pre>{{ measurements | pprint }}</pre>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
