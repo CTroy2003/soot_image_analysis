@@ -54,22 +54,19 @@ def get_args_from_parser():
 
 def args_for_input_image(args):
     if len(args.input) < 1:
-        print_error_info('Error: No value provided for -i (--input)')
-        sys.exit()
+        raise ValueError("No value provided for -i (--input)")
     image_list = []
     for image in args.input:
         if os.path.isfile(image):
             image_list.append(image)
         else:
-            print_error_info('Error: Invalid image path "{0}"'.format(image))
-            sys.exit()
+            raise ValueError(f'Invalid image path "{image}"')
     return image_list
 
 
 def args_for_dimension(args):
     if len(args.dimension) < 1:
-        print_error_info('Error: No value provided for -d (--dimension)')
-        sys.exit()
+        raise ValueError("No value provided for -d (--dimension)")
     dimension_list = []
     for argument in args.dimension:
         if argument.lower() in ['h', 'height']:
@@ -77,27 +74,23 @@ def args_for_dimension(args):
         elif argument.lower() in ['w', 'width']:
             dimension_list.append('w')
         else:
-            print_error_info('Error: Invalid dimension (should be h or w)')
-            sys.exit()
+            raise ValueError("Invalid dimension (should be h or w)")
     return dimension_list
 
 
 def args_for_size(args):
     if len(args.size) < 1:
-        print_error_info('Error: No value provided for -s (--size)')
-        sys.exit()
+        raise ValueError("No value provided for -s (--size)")
     size_list = []
     for argument in args.size:
         argument = str(argument)
         if "." in argument:
             before_dot, after_dot = argument.split(".")[0], argument.split(".")[1]
             if not before_dot.isdigit() or not after_dot.isdigit():
-                print_error_info('Error: Invalid size value in -s (--size)')
-                sys.exit()
-        else:
-            if not argument.isdigit():
-                print_error_info('Error: Invalid size value in -s (--size)')
-                sys.exit()
+                raise ValueError("Invalid size value in -s (--size)")
+            else:
+                if not argument.isdigit():
+                    raise ValueError("Invalid size value in -s (--size)")
         size_value = float(argument)
         size_list.append(size_value)
     return size_list
@@ -105,21 +98,17 @@ def args_for_size(args):
 
 def check_if_lengths_of_lists_are_equal(image_list, dim_list, size_list):
     if len(image_list) != len(dim_list):
-        print_error_info('Error: Number of images and dimensions do not match')
-        sys.exit()
+        raise ValueError("Number of images and dimensions do not match")
     if len(image_list) != len(size_list):
-        print_error_info('Error: Number of images and sizes do not match')
-        sys.exit()
+        raise ValueError("Number of images and sizes do not match")
     if len(dim_list) != len(size_list):
-        print_error_info('Error: Number of dimensions and sizes do not match')
-        sys.exit()
+        raise ValueError("Number of dimensions and sizes do not match")
 
 
 def args_for_min_area(args):
     min_area_list = []
     if len(args.min_area) < 1:
-        print_error_info('Error: No value provided for -min_area')
-        sys.exit()
+        raise ValueError("No value provided for -min_area")
     elif len(args.min_area) == 1:
         argument = str(args.min_area[0])
         if "." in argument:
@@ -139,12 +128,10 @@ def args_for_min_area(args):
             if "." in argument:
                 before_dot, after_dot = argument.split(".")[0], argument.split(".")[1]
                 if not before_dot.isdigit() or not after_dot.isdigit():
-                    print_error_info('Error: Invalid -min_area value')
-                    sys.exit()
+                    raise ValueError("Invalid -min_area value")
             else:
                 if not argument.isdigit():
-                    print_error_info('Error: Invalid -min_area value')
-                    sys.exit()
+                    raise ValueError("Invalid -min_area value")
             min_area_value = float(argument)
             min_area_list.append(min_area_value)
     return min_area_list
@@ -153,8 +140,7 @@ def args_for_min_area(args):
 def args_for_divisor_of_max_area(args):
     divisor_of_max_area_list = []
     if len(args.divisor_of_max_area) < 1:
-        print_error_info('Error: No value provided for -divisor_of_max_area')
-        sys.exit()
+        raise ValueError("No value provided for -divisor_of_max_area")
     elif len(args.divisor_of_max_area) == 1:
         argument = str(args.divisor_of_max_area[0])
         if "." in argument:
@@ -174,12 +160,10 @@ def args_for_divisor_of_max_area(args):
             if "." in argument:
                 before_dot, after_dot = argument.split(".")[0], argument.split(".")[1]
                 if not before_dot.isdigit() or not after_dot.isdigit():
-                    print_error_info('Error: Invalid -divisor_of_max_area value')
-                    sys.exit()
+                    raise ValueError("Invalid -divisor_of_max_area value")
             else:
                 if not argument.isdigit():
-                    print_error_info('Error: Invalid -divisor_of_max_area value')
-                    sys.exit()
+                    raise ValueError("Invalid -divisor_of_max_area value")
             divisor_of_max_area_value = float(argument)
             divisor_of_max_area_list.append(divisor_of_max_area_value)
     return divisor_of_max_area_list
@@ -189,8 +173,7 @@ def args_for_divisor_of_max_area(args):
 def get_rotating_image(image_name, flag_height, flag_width):
     original_image = cv2.imread(image_name)
     if original_image is None:
-        print_error_info(f"Cannot read image: {image_name}")
-        sys.exit()
+        raise FileNotFoundError(f"Cannot read image: {image_name}")
     if flag_height:
         image = original_image
     elif flag_width:
