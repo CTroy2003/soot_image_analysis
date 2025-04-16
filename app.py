@@ -70,11 +70,10 @@ def upload_file():
     
     # Generate a URL for the processed (annotated) image
     processed_image_url = url_for('static', filename=f'outputs/{annotated_filename}')
-    
-    # Generate URLs for the other output images (now located in static/outputs)
     contours_url = url_for('static', filename='outputs/contours.png')
     measurements_image_url = url_for('static', filename='outputs/Measurements.png')
     plot_url = url_for('static', filename='outputs/output_plot_1.png')
+    csv_url = url_for('static', filename='outputs/measurements.csv')
     
     # Render the template and pass all output URLs and measurements
     return render_template('index.html', 
@@ -82,7 +81,8 @@ def upload_file():
                            contours_url=contours_url,
                            measurements_image_url=measurements_image_url,
                            plot_url=plot_url,
-                           measurements=measurements)
+                           measurements=measurements,
+                           csv_url=csv_url)
 
 if __name__ == '__main__':
     app.run(debug=True)

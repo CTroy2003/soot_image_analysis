@@ -57,7 +57,7 @@
     <div class="center-container">
         <h1>Soot Image Analysis</h1>
         
-        <!-- Display flash messages if any -->
+        <!-- Display flash messages -->
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <ul>
@@ -117,6 +117,9 @@
         {% if measurements %}
             <div class="results-container">
                 <h3>Measurement Results:</h3>
+                {% if csv_url %}
+                    <p><a href="{{ csv_url }}" download>Download CSV</a></p>
+                {% endif %}
                 <pre>{{ measurements | pprint }}</pre>
             </div>
         {% endif %}

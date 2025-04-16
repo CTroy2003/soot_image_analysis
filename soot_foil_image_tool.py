@@ -567,9 +567,12 @@ def measure_image(image_path, dimension, size, step = 10, debug=0, min_area_inpu
         'theta_values': theta_values
     }
 
-    # Save Data
+    # Save Data to static/outputs
     max_rows = max(len(val) for val in measurements.values())
-    with open('measurements.csv', 'w', newline='') as f:
+    csv_dir = os.path.join('static', 'outputs')
+    os.makedirs(csv_dir, exist_ok=True)
+    csv_path = os.path.join(csv_dir, 'measurements.csv')
+    with open(csv_path, 'w', newline='') as f:
         writer = csv.writer(f)
         # Write header row from dictionary keys
         headers = list(measurements.keys())
