@@ -1,4 +1,5 @@
 import os
+import math
 import cv2
 from flask import Flask, request, render_template, url_for, redirect, flash
 from werkzeug.utils import secure_filename
@@ -51,6 +52,27 @@ def upload_file():
     filename = secure_filename(file.filename)
     upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(upload_path)
+    
+    # down‑scaling so Render doesn’t run out of RAM/CPU
+    img = cv2.imread(upload_path)
+    h, w = img.shape[:2]
+
+    MAX_PIXELS      = 100000   
+    MIN_SHORT_EDGE  = 250       
+
+    current_pixels  = h * w
+    scale_pix  = math.sqrt(MAX_PIXELS / current_pixels) if current_pixels > MAX_PIXELS else 1.0
+    scale_edge = (MIN_SHORT_EDGE / min(h, w)) if min(h, w) > MIN_SHORT_EDGE else 1.0
+
+    # choose the smaller factor – guarantees pixel cap, keeps as much detail as possible
+    scale = min(scale_pix, scale_edge)
+
+    if scale < 1.0:                         
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+        img   = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+        cv2.imwrite(upload_path, img)
+
     
     # Get the absolute path required by measure_image
     absolute_path = os.path.abspath(upload_path)
